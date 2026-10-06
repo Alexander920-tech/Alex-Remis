@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alex Remis - Junin</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>body{margin:0;font-family:system-ui;background:#111;color:#fff}#map{height:42vh}.panel{padding:12px}.card{background:#1e1e1e;border-radius:16px;padding:14px;margin-bottom:10px}input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#2a2a2a;color:#fff;margin-top:6px;box-sizing:border-box}.btn{width:100%;padding:16px;background:#FFD600;border:none;border-radius:12px;font-weight:900;font-size:18px;color:#111}</style>
+</head><body>
+<div id="map"></div>
+<div class="panel">
+<div class="card" style="border-left:4px solid #FFD600"><h3 style="margin:0;color:#FFD600">🚕 ALEX REMIS - JUNÍN</h3><small>Alias: Alexvivanco.gr • $850 x km • 24hs</small></div>
+<div class="card">
+📍 ¿De dónde salís?<input id="desde" placeholder="Ej: Belgrano 500">
+🏁 ¿A dónde vas?<input id="hasta" placeholder="Ej: Terminal" style="margin-top:8px">
+<div style="display:flex;justify-content:space-between;margin-top:12px;font-size:18px"><span id="km">- km</span><b id="precio" style="color:#FFD600">$0</b></div>
+💳<select id="pago"><option>Efectivo</option><option>Débito</option><option>Transferencia - Alexvivanco.gr</option></select>
+<button class="btn" onclick="pedir()" style="margin-top:10px">🚀 PEDIR REMIS</button>
+</div>
+</div>
+<script>
+let map=L.map('map').setView([-33.08,-68.72],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+function calc(){if(desde.value.length<3||hasta.value.length<3)return;let d=(Math.random()*5+1.5).toFixed(1);km.innerText=d+' km';let t=1200+d*850;precio.innerText='$'+t.toFixed(0);}
+desde.addEventListener('input',calc);hasta.addEventListener('input',calc);
+function pedir(){if(!desde.value||!hasta.value)return alert('Falta dato');window.open(`https://wa.me/5492635037833?text=🚕%20PEDIDO%20ALEX%20REMIS%0ADe:${encodeURIComponent(desde.value)}%0AA:${encodeURIComponent(hasta.value)}%0A${km.innerText}%20${precio.innerText}%0APago:${pago.value}`,'_blank');}
+</script></body></html>

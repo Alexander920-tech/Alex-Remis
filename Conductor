@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alex Conductor</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+const firebaseConfig = { TU_FIREBASE_CONFIG }; // <-- MISMA CONFIG
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+window.db=db; window.ref=ref; window.remove=remove; window.onChildAdded=onChildAdded;
+</script>
+<style>body{margin:0;font-family:system-ui;background:#0f0f0f;color:#fff}#map{height:50vh;display:none}.card{background:#1e1e1e;border-radius:16px;padding:15px;margin:12px}.btn{padding:14px;border-radius:10px;border:none;font-weight:900;flex:1}.amarillo{background:#FFD600;color:#111}.gris{background:#333;color:#fff}</style>
+</head><body>
+<div style="background:#FFD600;color:#111;padding:12px;font-weight:900">🚕 ALEX CONDUCTOR - EN LINEA</div>
+<div id="map"></div>
+<div id="activo" class="card" style="display:none;border:2px solid #00c853"><h3 style="margin:0;color:#00c853">Viaje en curso</h3><b id="ruta"></b><br><span id="pr"></span><div style="display:flex;gap:8px;margin-top:10px"><button class="btn gris" onclick="window.open('https://www.google.com/maps/dir/'+encodeURIComponent(window.vActual.desde)+'/'+encodeURIComponent(window.vActual.hasta),'_blank')">Google Maps</button><button class="btn amarillo" onclick="finalizar()">Finalizar</button></div></div>
+<div class="card">Tarifa $<input id="tarifa" type="number" value="850"><button class="btn amarillo" style="width:100%;margin-top:8px" onclick="localStorage.setItem('tarifa',tarifa.value);alert('Tarifa $'+tarifa.value+' guardada')">Guardar</button></div>
+<div id="lista"></div>
+<script>
+let map=L.map('map').setView([-33.08,-68.72],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);let linea=null;
+setTimeout(()=>{
+let viajesRef=ref(db,'viajes');
+onChildAdded(viajesRef,(snap)=>{
+let v=snap.val();let id=snap.key;
+let div=document.createElement('div');div.className='card';div.style.borderLeft='5px solid #FFD600';
+div.innerHTML=`<b>${v.desde} → ${v.hasta}</b><br><span style="color:#FFD600">${v.km} - ${v.precio}</span> ${v.pago}<br><div style="display:flex;gap:8px;margin-top:8px"><button class="btn gris" onclick="remove(ref(db,'viajes/${id}'));this.parentElement.parentElement.remove()">Rechazar</button><button class="btn amarillo">Aceptar y ver mapa</button></div>`;
+div.querySelector('.amarillo').onclick=()=>{
+window.vActual=v;document.getElementById('map').style.display='block';document.getElementById('activo').style.display='block';document.getElementById('ruta').innerText=v.desde+' → '+v.hasta;document.getElementById('pr').innerText=v.km+' '+v.precio;
+map.invalidateSize();let p1=[-33.08+Math.random()*0.02,-68.72+Math.random()*0.02];let p2=[-33.08+Math.random()*0.02,-68.72+Math.random()*0.02];if(linea)map.removeLayer(linea);linea=L.polyline([p1,p2],{color:'#FFD600',weight:6}).addTo(map);map.fitBounds(linea.getBounds(),{padding:[40,40]});remove(ref(db,'viajes/'+id));div.remove();
+}
+document.getElementById('lista').prepend(div);
+})
+},1000);
+function finalizar(){document.getElementById('map').style.display='none';document.getElementById('activo').style.display='none';alert('Viaje cobrado por '+window.vActual.pago+' - Alias Alexvivanco.gr')}
+</script></body></html>

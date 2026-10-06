@@ -1,0 +1,8 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Alex Conductor</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>body{margin:0;font-family:system-ui;background:#0f0f0f;color:#fff}#map{height:48vh}.card{background:#1e1e1e;border-radius:16px;padding:14px;margin:10px}.btn{padding:12px;border-radius:10px;border:none;font-weight:900;flex:1}.amarillo{background:#FFD600;color:#111}.gris{background:#333;color:#fff}.header{background:#FFD600;color:#111;padding:12px;font-weight:900}</style>
+</head><body>
+<div class="header">🚕 ALEX CONDUCTOR - EN LINEA</div><div id="map"></div>
+<div id="activo" class="card" style="display:none;border:2px solid #00c853"><b id="ruta"></b><br><span id="pr"></span><br><div style="display:flex;gap:8px;margin-top:10px"><button class="btn gris" onclick="window.open('https://www.google.com/maps/dir/'+ruta.innerText,'_blank')">Maps</button><button class="btn amarillo" onclick="activo.style.display='none';map.style.display='none'">Finalizar</button></div></div>
+<div id="lista" class="card">Los pedidos te llegan por WhatsApp a tu 2635037833</div>
+<script>let map=L.map('map').setView([-33.08,-68.72],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);</script></body></html>

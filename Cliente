@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alex Remis Cliente</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+const firebaseConfig = { TU_FIREBASE_CONFIG }; // <-- PEGÁ TU CONFIG ACÁ
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+window.pedirViaje = (data)=>{
+  push(ref(db,'viajes'), data);
+  window.open(`https://wa.me/5492635037833?text=🚕 NUEVO VIAJE%0ADe:${data.desde}%0AA:${data.hasta}%0A${data.km} ${data.precio}`,'_blank');
+  alert('¡Pedido enviado a Alex Remis!');
+}
+</script>
+<style>body{margin:0;font-family:system-ui;background:#111;color:#fff}#map{height:45vh}.panel{padding:15px}.card{background:#1e1e1e;border-radius:16px;padding:15px;margin-bottom:10px}input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#2a2a2a;color:#fff;margin-top:6px;box-sizing:border-box}.btn{width:100%;padding:16px;background:#FFD600;border:none;border-radius:12px;font-weight:900;font-size:18px}</style>
+</head><body>
+<div id="map"></div>
+<div class="panel">
+<div class="card"><h3 style="margin:0;color:#FFD600">🚕 Alex Remis</h3><small>Alias: Alexvivanco.gr • $850 x km</small></div>
+<div class="card">
+📍 De<input id="desde" placeholder="Ej: Belgrano 500, Junín">
+🏁 A<input id="hasta" placeholder="Ej: Hospital" style="margin-top:8px">
+<div style="display:flex;justify-content:space-between;margin-top:10px"><span id="km">- km</span><b id="precio" style="color:#FFD600">$0</b></div>
+💳<select id="pago"><option>Efectivo</option><option>Débito</option><option>Transferencia - Alexvivanco.gr</option></select>
+<button class="btn" onclick="pedir()" style="margin-top:10px">PEDIR REMIS</button>
+</div>
+</div>
+<script>
+let map=L.map('map').setView([-33.08,-68.72],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+let base=1200, tarifa=850;
+function calc(){let d=desde.value,h=hasta.value;if(d.length<3||h.length<3)return;let dist=(Math.random()*6+1).toFixed(1);km.innerText=dist+' km';precio.innerText='$'+(base+dist*tarifa).toFixed(0);}
+desde.addEventListener('input',calc);hasta.addEventListener('input',calc);
+function pedir(){if(!desde.value||!hasta.value)return alert('Falta desde/hasta');pedirViaje({desde:desde.value,hasta:hasta.value,km:km.innerText,precio:precio.innerText,pago:pago.value,fecha:Date.now(),estado:'pendiente'})}
+</script></body></html>
